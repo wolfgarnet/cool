@@ -279,6 +279,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 
         private File path;
         private String viewTag;
+        private Baseline baseline;
 
         public ContentCreator setPostFix( String postFix ) {
             this.postFix = postFix;
@@ -332,7 +333,15 @@ public class ClearCaseRule extends Environment implements TestRule {
             return viewTag;
         }
 
-        public Baseline create() throws ClearCaseException {
+        public Baseline getBaseline() throws ClearCaseException {
+            if( baseline == null ) {
+                create();
+            }
+
+            return baseline;
+        }
+
+        public void create() throws ClearCaseException {
             viewTag = getUniqueName() + postFix;
             logger.finer( "Creating content for " + viewTag );
 
@@ -363,7 +372,7 @@ public class ClearCaseRule extends Environment implements TestRule {
                 ExceptionUtils.print( e, System.out, true );
             }
 
-            return Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
+            baseline = Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
         }
     }
 	
