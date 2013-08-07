@@ -244,5 +244,127 @@ public class ClearCaseRule extends Environment implements TestRule {
 		
 		return path;
 	}
+
+    public ContentCreator getContentCreator() {
+        return new ContentCreator();
+    }
+
+    public class ContentCreator {
+
+        /**
+         * The post fix.
+         */
+        private String postFix = "_one_dev";
+
+        private String streamName = "one_dev";
+
+        private Stream stream;
+
+        private String rootedComponentName = "Model";
+
+        private Component rootedComponent;
+
+        private String componentName = "_System";
+
+        private Component component;
+
+        private String baselineName = "baseline-for-test";
+
+        private String activityName = "COOL activity";
+
+        private String activityHeadline = "COOL activity headline";
+
+        private String filename = "model.h";
+
+
+        private File path;
+        private String viewTag;
+
+        public ContentCreator setPostFix( String postFix ) {
+            this.postFix = postFix;
+
+            return this;
+        }
+
+        public ContentCreator setStreamName( String streamName ) {
+            this.streamName = streamName;
+
+            return this;
+        }
+
+        public ContentCreator setComponentName( String componentName ) {
+            this.componentName = componentName;
+
+            return this;
+        }
+
+        public ContentCreator setRootedComponentName( String rootedComponentName ) {
+            this.rootedComponentName = rootedComponentName;
+
+            return this;
+        }
+
+        public ContentCreator setBaselineName( String baselineName ) {
+            this.baselineName = baselineName;
+            return this;
+        }
+
+        public ContentCreator setActivityName( String activityName ) {
+            this.activityName = activityName;
+            return this;
+        }
+
+        public ContentCreator setActivityHeadline( String activityHeadline ) {
+            this.activityHeadline = activityHeadline;
+            return this;
+        }
+
+        public ContentCreator setFilename( String filename ) {
+            this.filename = filename;
+            return this;
+        }
+
+        public File getPath() {
+            return path;
+        }
+
+        public String getViewTag() {
+            return viewTag;
+        }
+
+        public Baseline create() throws ClearCaseException {
+            viewTag = getUniqueName() + postFix;
+            logger.finer( "Creating content for " + viewTag );
+
+            path = new File( context.mvfs + "/" + viewTag + "/" + getVobName() );
+            logger.finer( "Using path " + path );
+
+            /* Resolve Stream */
+            if( stream == null ) {
+                stream = context.streams.get( streamName );
+            }
+
+            /* Resolve Component */
+            if( component == null ) {
+                component = context.components.get( componentName );
+            }
+
+            /* Resolve rooted Component */
+            if( rootedComponent == null ) {
+                rootedComponent = context.components.get( rootedComponentName );
+            }
+
+            Activity activity = Activity.create( activityName, stream, getPVob(), true, activityHeadline, null, path );
+            UCMView.setActivity( activity, path, null, null );
+
+            try {
+                addNewElement( rootedComponent, path, filename );
+            } catch( ClearCaseException e ) {
+                ExceptionUtils.print( e, System.out, true );
+            }
+
+            return Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
+        }
+    }
 	
 }
