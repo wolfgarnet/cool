@@ -270,7 +270,7 @@ public class ClearCaseRule extends Environment implements TestRule {
 
         private String baselineName = "baseline-for-test";
 
-        private String activityName = "COOL activity";
+        private String activityName = "COOL-activity";
 
         private String activityHeadline = "COOL activity headline";
 
