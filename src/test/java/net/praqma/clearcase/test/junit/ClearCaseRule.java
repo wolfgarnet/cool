@@ -341,7 +341,7 @@ public class ClearCaseRule extends Environment implements TestRule {
             return baseline;
         }
 
-        public void create() throws ClearCaseException {
+        public ContentCreator create() throws ClearCaseException {
             viewTag = getUniqueName() + postFix;
             logger.finer( "Creating content for " + viewTag );
 
@@ -373,6 +373,8 @@ public class ClearCaseRule extends Environment implements TestRule {
             }
 
             baseline = Baseline.create( baselineName, context.components.get( "_System" ), path, Baseline.LabelBehaviour.FULL, false );
+
+            return this;
         }
     }
 	
