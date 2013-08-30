@@ -362,8 +362,6 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 
     /**
      * Set the default target {@link Stream} in ClearCase
-     * @param stream
-     * @throws CleartoolException
      */
 	public void setDefaultTarget( Stream stream ) throws CleartoolException {
 		
@@ -507,11 +505,15 @@ public class Stream extends UCMEntity implements Diffable, Serializable, StreamC
 		return this.recommendedBaselines;
 	}
 
+    public void recommendBaseline( Baseline baseline ) throws CleartoolException {
+        recommendBaseline( baseline, false );
+    }
+
     /**
      * Recommend the {@link Baseline} for this {@link Stream} in ClearCase
      */
-	public void recommendBaseline( Baseline baseline ) throws CleartoolException {
-		String cmd = "chstream -recommend " + baseline + " " + this;
+	public void recommendBaseline( Baseline baseline, boolean generate ) throws CleartoolException {
+		String cmd = "chstream " +  ( generate ? "-generate " : "" ) + " -recommend " + baseline + " " + this;
 		try {
 			Cleartool.run( cmd );
 		} catch( AbnormalProcessTerminationException e ) {
